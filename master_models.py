@@ -12,7 +12,7 @@ class User(Base):
 ##########################################################
 
 
-class Admin(Base):
+class Admin(Base, User):
     __tablename__ = 'admin'
     admin_id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey('users.user_id'), nullable=False)
@@ -20,7 +20,7 @@ class Admin(Base):
     last_visit = Column(DateTime, default=func.now())
 
 
-class MasterInfo(Base):
+class MasterInfo(Base, User):
     __tablename__ = 'master_info'
     master_id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.user_id'), nullable=False, index=True)
