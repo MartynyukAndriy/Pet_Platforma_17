@@ -9,9 +9,9 @@ from src.schemas.user_schemas import UserResponse, UserUpdate, UserBlackList, Us
 from src.services.auth import auth_service
 from src.services.roles import RolesAccess
 
-access_get = RolesAccess([Role.admin, Role.moderator, Role.user])
-access_create = RolesAccess([Role.admin, Role.moderator, Role.user])
-access_update = RolesAccess([Role.admin, Role.moderator, Role.user])
+access_get = RolesAccess([Role.admin, Role.moderator, Role.client, Role.master])
+access_create = RolesAccess([Role.admin, Role.moderator, Role.client, Role.master])
+access_update = RolesAccess([Role.admin, Role.moderator, Role.client, Role.master])
 access_delete = RolesAccess([Role.admin])
 access_block = RolesAccess([Role.admin])
 
@@ -60,7 +60,7 @@ async def profile_update(username: str, body: UserUpdate, db: Session = Depends(
     :param current_user: User: Get the current user,
     :return: An updated user object
     """
-    if current_user.username != username and current_user.role == 'user':
+    if current_user.username != username and current_user.role in ('client', 'master'):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You can only update your own profile")
 
     updated_user = await update_user_info(body, username, db)

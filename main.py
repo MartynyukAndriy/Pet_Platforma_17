@@ -12,18 +12,18 @@ from src.routes import auth, users
 
 # Стоврюємо екземпляр FastApi, встановлюємо назву додатка в swagger та відсоруємо роути по методам:
 # http://localhost:8001/admin/
-from src.services.admin_panel.admin_panel import UserAdmin, CityAdmin, CountryAdmin, MasterInfoAdmin, AdministratorAdmin, SubscribePlanAdmin
+from src.services.admin_panel.admin_panel import UserAdmin, CityAdmin, CountryAdmin, SubscribePlanAdmin #, MasterInfoAdmin, AdministratorAdmin,
 
 app = FastAPI(swagger_ui_parameters={"operationsSorter": "method"}, title='Platforma17 app')
 
 # підключаємо адмінку
 admin = Admin(app, engine)
 admin.add_view(UserAdmin)
-admin.add_view(MasterInfoAdmin)
+# admin.add_view(MasterInfoAdmin)
 admin.add_view(CountryAdmin)
 admin.add_view(CityAdmin)
 admin.add_view(SubscribePlanAdmin)
-admin.add_view(AdministratorAdmin)
+# admin.add_view(AdministratorAdmin)
 
 
 
