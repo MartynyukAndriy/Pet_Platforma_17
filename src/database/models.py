@@ -6,6 +6,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy import Column, String, DateTime, ForeignKey, Boolean, Enum, Integer, func, Float
 from sqlalchemy.orm import declarative_base, relationship, mapped_column, Mapped
 from src.database.db import engine
+from sqlalchemy.sql.schema import Table
 
 
 Base = declarative_base()
@@ -101,6 +102,53 @@ class WorkPhoto(Base):
     work_photo_id = Column(Integer, primary_key=True, index=True)
     master_id = Column(Integer, ForeignKey('master_info.master_id'), nullable=False)
     work_photo_url = Column(String, nullable=True)
+
+
+class UserResponse(Base):
+    __tablename__ = 'user_responses'
+    id = Column(Integer, primary_key=True, index=True)
+    master_id = Column(Integer, ForeignKey('master_info.master_id'), nullable=False)
+    user_id = Column(Integer, ForeignKey('users.user_id'), nullable=False, index=True)
+    rate = Column(Integer, nullable=True)
+    comment = Column(String, nullable=True)
+    created_at = Column(DateTime, default=datetime.now)
+    updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
+
+
+class Service(Base):
+    __tablename__ = 'services'
+    service_id = Column(Integer, primary_key=True, index=True)
+    service_ua = Column(String, nullable=True)
+    service_en = Column(String, nullable=True)
+
+
+class ServiceCategories(Base):
+    __tablename__ = 'service_categories'
+    service_category_id = Column(Integer, primary_key=True, index=True)
+    service_id = Column(Integer, ForeignKey('services.service_id'), nullable=False)
+    service_category_ua = Column(String, nullable=True)
+    service_category_en = Column(String, nullable=True)
+
+
+class Currency(Base):
+    __tablename__ = 'currencies'
+    currency_id = Column(Integer, primary_key=True, index=True)
+    currency = Column(String, nullable=False)
+
+
+users_m2m_services = Table(
+    'masters_m2m_services',
+    Base.metadata,
+    Column('id', Integer, primary_key=True),
+    Column('master_id', Integer, ForeignKey('masters.master_id')),
+    Column('service_id', Integer, ForeignKey('services.service_id'), nullable=False),
+    Column('service_category_id', Integer, ForeignKey('service_categories.service_category_id'), nullable=False),
+    Column('service_description', String, nullable=True),
+    Column('service_price', Float, nullable=False),
+    Column('service_sale_price', Float, nullable=True),
+    Column('discount', Float, nullable=True),
+    Column('currency_id', Integer, ForeignKey('currencies.currency_id')),
+)
 
 
 Base.metadata.create_all(bind=engine)
