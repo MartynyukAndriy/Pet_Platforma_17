@@ -15,9 +15,9 @@ class Settings(BaseSettings):
     redis_host: str = "localhost"
     redis_password: str = "password"
     redis_port: int = 6379
-    cloudinary_name: str = "name"
-    cloudinary_api_key: str = "123456"
-    cloudinary_api_secret: str = "secret"
+    # cloudinary_name: str = "name"
+    # cloudinary_api_key: str = "123456"
+    # cloudinary_api_secret: str = "secret"
 
     model_config = ConfigDict(extra='ignore', env_file=".env", env_file_encoding="utf-8")
 
