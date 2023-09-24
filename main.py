@@ -7,24 +7,21 @@ from fastapi import FastAPI
 from sqladmin import Admin
 
 from src.database.db import engine
-from src.routes import auth, users
+from src.routes import auth, users, countries, cities
 
 
-# Стоврюємо екземпляр FastApi, встановлюємо назву додатка в swagger та відсоруємо роути по методам:
-# http://localhost:8001/admin/
-from src.services.admin_panel.admin_panel import UserAdmin, CityAdmin, CountryAdmin, SubscribePlanAdmin #, MasterInfoAdmin, AdministratorAdmin,
+# Створюємо екземпляр FastApi, встановлюємо назву додатка у swagger та відсортуємо роути по методах:
+from src.services.admin_panel.admin_panel import UserAdmin, CityAdmin, CountryAdmin, SubscribePlanAdmin
 
 app = FastAPI(swagger_ui_parameters={"operationsSorter": "method"}, title='Platforma17 app')
 
 # підключаємо адмінку
+# http://localhost:8001/admin/
 admin = Admin(app, engine)
 admin.add_view(UserAdmin)
-# admin.add_view(MasterInfoAdmin)
 admin.add_view(CountryAdmin)
 admin.add_view(CityAdmin)
 admin.add_view(SubscribePlanAdmin)
-# admin.add_view(AdministratorAdmin)
-
 
 
 @app.get("/")
@@ -39,6 +36,8 @@ def root():
 
 app.include_router(auth.router, prefix='/api')
 app.include_router(users.router, prefix='/api')
+app.include_router(countries.router, prefix='/api')
+app.include_router(cities.router, prefix='/api')
 
 
 if __name__ == '__main__':

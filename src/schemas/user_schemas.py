@@ -1,28 +1,78 @@
 from typing import Optional
-
-from pydantic import BaseModel, EmailStr, Field
-
+from pydantic import BaseModel, EmailStr, Field, HttpUrl
+from sqlalchemy.dialects.postgresql import UUID
+from uuid import uuid4
 from src.database.models import Role
 
 
 class UserModel(BaseModel):
-    username: str = Field(min_length=5, max_length=12)
-    email: EmailStr
+    user_role: Role = 'client'
     password: str = Field(min_length=6)
+    name: str = Field(min_length=5, max_length=30)
+    email: EmailStr
+    country_id: int = Field(1, gt=0)
+    city_id: int = Field(1, gt=0)
+    phone: str
+    avatar: Optional[HttpUrl] = Field(None)
 
 
 class UserResponse(BaseModel):
-    id: int
-    username: str = "Bob"
-    email: EmailStr = "bob@gmail.com"
-    role: Role = "user"
+    user_id: int = Field(default_factory=lambda: uuid4().hex)
+    user_role: Role = 'client'
+    password: str = Field(min_length=6)
+    name: str = "Oksana"
+    email: EmailStr = "oksana@gmail.com"
+    country_id: int
+    city_id: int
+    phone: str
+    avatar: Optional[HttpUrl] = Field(None)
+
+    class Config:
+        from_attributes = True
+
+
+class MasterModel(UserModel):
+    user_id: int = Field(default_factory=lambda: uuid4().hex)
+    user_role: Role = 'master'
+    description: Optional[str]
+    salon_name: Optional[str]
+    salon_address: Optional[str]
+    longitude: Optional[float]
+    latitude: Optional[float]
+    is_active: bool = True
+
+
+class MasterResponse(UserResponse):
+    master_id: int = Field(default_factory=lambda: uuid4().hex)
+    user_role: Role = 'master'
+    description: Optional[str]
+    salon_name: Optional[str]
+    salon_address: Optional[str]
+    longitude: Optional[float]
+    latitude: Optional[float]
+    is_active: bool
+
+    class Config:
+        from_attributes = True
+
+
+class AdminModel(UserModel):
+    user_id: int = Field(default_factory=lambda: uuid4().hex)
+    user_role: Role = 'admin'
+    is_active: bool = True
+
+
+class AdminResponse(UserResponse):
+    admin_id: int = Field(default_factory=lambda: uuid4().hex)
+    user_role: Role = 'admin'
+    is_active: bool
 
     class Config:
         from_attributes = True
 
 
 class UserUpdate(BaseModel):
-    username: str
+    name: str
     email: EmailStr
 
 
@@ -34,10 +84,10 @@ class UserBlackList(BaseModel):
 
 
 class UserBlacklistResponse(BaseModel):
-    id: int
-    username: str = "Bob"
-    email: EmailStr = "bob@gmail.com"
-    role: Role = "user"
+    user_id: int = Field(default_factory=lambda: uuid4().hex)
+    name: str = "Oksana"
+    email: EmailStr = "oksana@gmail.com"
+    role: Role = "client"
     banned: Optional[bool] = False
 
     class Config:
