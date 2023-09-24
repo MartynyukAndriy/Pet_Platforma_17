@@ -3,7 +3,7 @@ import enum
 from typing import List
 import uuid
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy import Column, String, DateTime, ForeignKey, Boolean, Enum, Integer, func, Float
+from sqlalchemy import Column, String, DateTime, ForeignKey, Boolean, Enum, Integer, func, Float, Table
 from sqlalchemy.orm import declarative_base, relationship, mapped_column, Mapped
 from src.database.db import engine
 from sqlalchemy.sql.schema import Table
@@ -13,9 +13,11 @@ Base = declarative_base()
 
 
 class Role(enum.Enum):
+    client = 'client'
+    master = 'master'
     admin = 'admin'
     moderator = 'moderator'
-    user = 'user'
+    superadmin = 'superadmin'
 
 
 class Country(Base):
@@ -46,9 +48,8 @@ class City(Base):
 class User(Base):
     __tablename__ = "users"
 
-    # user_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    user_id = Column(Integer, primary_key=True)
-    user_role = Column('role', Enum(Role), default=Role.user)
+    user_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_role = Column('role', Enum(Role), default=Role.client)
     password = Column(String(255), nullable=False)
     name = Column(String(50))
     email = Column(String(250), nullable=False, unique=True)
@@ -66,10 +67,10 @@ class User(Base):
         return f"User id: {self.user_id}"
 
 
-class Admin(User):
+class Admin(Base):
     __tablename__ = 'admin'
     admin_id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey('users.user_id'), nullable=False)
+    user_id = Column(UUID(as_uuid=True), ForeignKey('users.user_id'), nullable=False)
     is_active = Column(Boolean, default=False)
     last_visit = Column(DateTime, default=func.now())
 
@@ -81,10 +82,10 @@ class SubscribePlan(Base):
     plan_period = Column(Integer, nullable=False)
 
 
-class MasterInfo(User):
+class MasterInfo(Base):
     __tablename__ = 'master_info'
     master_id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('users.user_id'), nullable=False, index=True)
+    user_id = Column(UUID(as_uuid=True), ForeignKey('users.user_id'), nullable=False, index=True)
     description = Column(String, nullable=True)
     salon_name = Column(String, nullable=True)
     salon_address = Column(String, nullable=True)
@@ -108,7 +109,7 @@ class UserResponse(Base):
     __tablename__ = 'user_responses'
     id = Column(Integer, primary_key=True, index=True)
     master_id = Column(Integer, ForeignKey('master_info.master_id'), nullable=False)
-    user_id = Column(Integer, ForeignKey('users.user_id'), nullable=False, index=True)
+    user_id = Column(UUID(as_uuid=True), ForeignKey('users.user_id'), nullable=False, index=True)
     rate = Column(Integer, nullable=True)
     comment = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.now)
@@ -140,7 +141,7 @@ users_m2m_services = Table(
     'masters_m2m_services',
     Base.metadata,
     Column('id', Integer, primary_key=True),
-    Column('master_id', Integer, ForeignKey('masters.master_id')),
+    Column('master_id', Integer, ForeignKey('master_info.master_id')),
     Column('service_id', Integer, ForeignKey('services.service_id'), nullable=False),
     Column('service_category_id', Integer, ForeignKey('service_categories.service_category_id'), nullable=False),
     Column('service_description', String, nullable=True),

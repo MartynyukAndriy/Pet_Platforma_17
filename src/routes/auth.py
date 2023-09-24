@@ -7,7 +7,7 @@ from src.repository import users as repository_users
 from src.schemas.user_schemas import UserModel, UserResponse
 from src.schemas.auth_schemas import TokenModel, RequestEmail
 from src.services.auth import auth_service
-from src.services.email import send_email
+# from src.services.email import send_email
 from src.conf.messages import AuthMessages
 
 router = APIRouter(prefix='/auth', tags=["auth"])

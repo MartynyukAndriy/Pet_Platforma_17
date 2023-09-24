@@ -8,9 +8,9 @@ from src.database.models import User, City, Country, MasterInfo, Admin as Admini
 
 # визначаємо зміст адмінки: якими моделями бази даних і якими полями хочемо керувати через адмінку:
 class UserAdmin(ModelView, model=User):
-    column_list = [User.user_id, User.name, User.email]
+    column_list = "__all__"
     column_searchable_list = [User.name]
-    column_sortable_list = [User.user_id]
+    column_sortable_list = [User.user_id, User.user_role, User.country_id, User.city_id]
     column_default_sort = [(User.email, True), (User.name, False)]
     can_create = True
     can_edit = True
@@ -21,20 +21,20 @@ class UserAdmin(ModelView, model=User):
     name_plural = "Users"
     icon = "fa-solid fa-user"
 
-
-class MasterInfoAdmin(ModelView, model=MasterInfo):
-    column_list = [MasterInfo.user_id, MasterInfo.name, MasterInfo.email]
-    column_searchable_list = [MasterInfo.name]
-    column_sortable_list = [MasterInfo.user_id]
-    column_default_sort = [(MasterInfo.email, True), (MasterInfo.name, False)]
-    can_create = True
-    can_edit = True
-    can_delete = False
-    can_view_details = True
-    can_export = True
-    name = "Master"
-    name_plural = "Masters"
-    icon = "fa-solid fa-user-gear"
+#
+# class MasterInfoAdmin(ModelView, model=MasterInfo):
+#     column_list = [MasterInfo.user_id, MasterInfo.name, MasterInfo.email]
+#     column_searchable_list = [MasterInfo.name]
+#     column_sortable_list = [MasterInfo.user_id]
+#     column_default_sort = [(MasterInfo.email, True), (MasterInfo.name, False)]
+#     can_create = True
+#     can_edit = True
+#     can_delete = False
+#     can_view_details = True
+#     can_export = True
+#     name = "Master"
+#     name_plural = "Masters"
+#     icon = "fa-solid fa-user-gear"
 
 
 class CityAdmin(ModelView, model=City):
@@ -81,17 +81,17 @@ class CountryAdmin(ModelView, model=Country):
     name_plural = "Countries"
     icon = "fa-solid fa-earth-americas"
 
-
-class AdministratorAdmin(ModelView, model=Administrator):
-    column_list = [Administrator.user_id, Administrator.name, Administrator.email]
-    column_searchable_list = [Administrator.name]
-    column_sortable_list = [Administrator.name]
-    column_default_sort = [(Administrator.email, True), (Administrator.name, False)]
-    can_create = True
-    can_edit = True
-    can_delete = False
-    can_view_details = True
-    can_export = True
-    name = "Administrator"
-    name_plural = "Administrators"
-    icon = "fa-solid fa-person-military-pointing"
+#
+# class AdministratorAdmin(ModelView, model=Administrator):
+#     column_list = [Administrator.user_id, Administrator.name, Administrator.email]
+#     column_searchable_list = [Administrator.name]
+#     column_sortable_list = [Administrator.name]
+#     column_default_sort = [(Administrator.email, True), (Administrator.name, False)]
+#     can_create = True
+#     can_edit = True
+#     can_delete = False
+#     can_view_details = True
+#     can_export = True
+#     name = "Administrator"
+#     name_plural = "Administrators"
+#     icon = "fa-solid fa-person-military-pointing"
