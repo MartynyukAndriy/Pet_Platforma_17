@@ -4,7 +4,9 @@ from typing import List
 import uuid
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy import Column, String, DateTime, ForeignKey, Boolean, Enum, Integer, func, Float, Table
-from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy.orm import declarative_base, relationship, mapped_column, Mapped
+from src.database.db import engine
+from sqlalchemy.sql.schema import Table
 
 
 Base = declarative_base()
@@ -149,3 +151,5 @@ users_m2m_services = Table(
     Column('currency_id', Integer, ForeignKey('currencies.currency_id')),
 )
 
+
+Base.metadata.create_all(bind=engine)
