@@ -140,7 +140,7 @@ users_m2m_services = Table(
     'masters_m2m_services',
     Base.metadata,
     Column('id', Integer, primary_key=True),
-    Column('master_id', Integer, ForeignKey('masters.master_id')),
+    Column('master_id', Integer, ForeignKey('master_info.master_id')),
     Column('service_id', Integer, ForeignKey('services.service_id'), nullable=False),
     Column('service_category_id', Integer, ForeignKey('service_categories.service_category_id'), nullable=False),
     Column('service_description', String, nullable=True),
