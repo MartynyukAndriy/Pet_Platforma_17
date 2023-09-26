@@ -6,7 +6,7 @@ from fastapi import FastAPI
 # from src.conf.config import settings
 from sqladmin import Admin
 
-from src.database.db import engine
+# from src.database.db import engine
 from src.routes import auth, users, countries, cities
 
 
@@ -17,11 +17,11 @@ app = FastAPI(swagger_ui_parameters={"operationsSorter": "method"}, title='Platf
 
 # підключаємо адмінку
 # http://localhost:8001/admin/
-admin = Admin(app, engine)
-admin.add_view(UserAdmin)
-admin.add_view(CountryAdmin)
-admin.add_view(CityAdmin)
-admin.add_view(SubscribePlanAdmin)
+# admin = Admin(app, engine)
+# admin.add_view(UserAdmin)
+# admin.add_view(CountryAdmin)
+# admin.add_view(CityAdmin)
+# admin.add_view(SubscribePlanAdmin)
 
 
 @app.get("/")
