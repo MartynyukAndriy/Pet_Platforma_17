@@ -7,13 +7,13 @@ from src.database.models import Role
 
 class UserModel(BaseModel):
     user_role: Role = 'client'
-    password: str = Field(min_length=6)
+    password: str = Field(min_length=8)
     name: str = Field(min_length=5, max_length=30)
     email: EmailStr
     country_id: int = Field(1, gt=0)
     city_id: int = Field(1, gt=0)
     phone: str
-    avatar: Optional[HttpUrl] = Field(None)
+    avatar: Optional[str] = Field(None)
 
 
 class UserResponse(BaseModel):
@@ -25,7 +25,7 @@ class UserResponse(BaseModel):
     country_id: int
     city_id: int
     phone: str
-    avatar: Optional[HttpUrl] = Field(None)
+    avatar: Optional[str] = Field(None)
 
     class Config:
         from_attributes = True
