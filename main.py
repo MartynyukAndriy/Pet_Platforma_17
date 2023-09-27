@@ -3,25 +3,34 @@ import uvicorn
 from fastapi import FastAPI
 
 # from fastapi_limiter import FastAPILimiter
-# from src.conf.config import settings
-# from sqladmin import Admin
+from src.conf.config import settings
+from sqladmin import Admin
 
-# from src.database.db import engine
+from src.database.db import create_async_engine
+
 from src.routes import auth, users, countries, cities, currency
 
 
+engine = create_async_engine(settings.sqlalchemy_database_url)
+
+
 # Створюємо екземпляр FastApi, встановлюємо назву додатка у swagger та відсортуємо роути по методах:
-# from src.services.admin_panel.admin_panel import UserAdmin, CityAdmin, CountryAdmin, SubscribePlanAdmin
+from src.services.admin_panel.admin_panel import UserAdmin, MasterInfoAdmin, CityAdmin, CountryAdmin, \
+    SubscribePlanAdmin, UserResponseAdmin, ServiceAdmin, ServiceCategoryAdmin
 
 app = FastAPI(swagger_ui_parameters={"operationsSorter": "method"}, title='Platforma17 app')
 
-# підключаємо адмінку
+# підключаємо адмін-панель
 # http://localhost:8001/admin/
-# admin = Admin(app, engine)
-# admin.add_view(UserAdmin)
-# admin.add_view(CountryAdmin)
-# admin.add_view(CityAdmin)
-# admin.add_view(SubscribePlanAdmin)
+admin = Admin(app, engine)
+admin.add_view(UserAdmin)
+admin.add_view(MasterInfoAdmin)
+admin.add_view(CountryAdmin)
+admin.add_view(CityAdmin)
+admin.add_view(SubscribePlanAdmin)
+admin.add_view(UserResponseAdmin)
+admin.add_view(ServiceCategoryAdmin)
+admin.add_view(ServiceAdmin)
 
 
 @app.get("/")

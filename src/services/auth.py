@@ -18,8 +18,8 @@ from src.repository import users as repository_users
 
 class Auth:
     pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-    SECRET_KEY = settings.jwt_secret_key
-    ALGORITHM = settings.jwt_algorithm
+    SECRET_KEY = settings.secret_key    #.jwt_secret_key
+    ALGORITHM = settings.algorithm  #jwt_algorithm
     oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
     # r = redis.Redis(host=settings.redis_host, port=settings.redis_port, password=settings.redis_password, encoding="utf-8", db=0)
 
