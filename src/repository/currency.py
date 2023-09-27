@@ -46,4 +46,3 @@ async def delete_currency(currency_id: int, db: AsyncSession):
         await db.delete(deleted_currency)
         await db.commit()
     return deleted_currency
-
