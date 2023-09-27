@@ -14,9 +14,7 @@ class Base(DeclarativeBase):
 class DatabaseSessionManager:
     def __init__(self, url: str):
         self._engine: AsyncEngine | None = create_async_engine(url)
-        self._session_maker: async_sessionmaker | None = async_sessionmaker(autocommit=False,
-                                                                            autoflush=False,
-                                                                            expire_on_commit=False,
+        self._session_maker: async_sessionmaker | None = async_sessionmaker(autocommit=False, autoflush=False,
                                                                             bind=self._engine)
 
     @contextlib.asynccontextmanager

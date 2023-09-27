@@ -7,7 +7,9 @@ from src.conf.config import settings
 from sqladmin import Admin
 
 from src.database.db import create_async_engine
-from src.routes import auth, users, countries, cities
+
+from src.routes import auth, users, countries, cities, currency
+
 
 engine = create_async_engine(settings.sqlalchemy_database_url)
 
@@ -38,13 +40,15 @@ def root():
 
 # @app.on_event("startup")
 # async def startup():
-#     r = await redis.Redis(host=settings.redis_host, port=settings.redis_port, password=settings.redis_password, encoding="utf-8", db=0)
+#     r = await redis.Redis(host=settings.redis_host, port=settings.redis_port, password=settings.redis_password,
+#     encoding="utf-8", db=0)
 #     await FastAPILimiter.init(r)
 
 app.include_router(auth.router, prefix='/api')
 app.include_router(users.router, prefix='/api')
 app.include_router(countries.router, prefix='/api')
 app.include_router(cities.router, prefix='/api')
+app.include_router(currency.router, prefix='/api')
 
 
 if __name__ == '__main__':
