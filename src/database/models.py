@@ -1,6 +1,5 @@
 from datetime import datetime
 import enum
-from typing import List
 import uuid
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy import Column, String, DateTime, ForeignKey, Boolean, Enum, Integer, func, Float, Table
@@ -62,7 +61,7 @@ class User(Base):
     updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
 
     def __str__(self):
-        return f"User id: {self.user_id}"
+        return f"{self.name}"
 
 
 class Admin(Base):
@@ -148,4 +147,3 @@ users_m2m_services = Table(
     Column('discount', Float, nullable=True),
     Column('currency_id', Integer, ForeignKey('currencies.currency_id')),
 )
-

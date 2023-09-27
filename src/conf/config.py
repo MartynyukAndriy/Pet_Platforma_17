@@ -3,21 +3,19 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-
-    sqlalchemy_database_url: str = "postgresql+asyncpg://postgres:password@localhost:5432/postgres"
-    jwt_secret_key: str = "secret"
-    jwt_algorithm: str = "HS256"
-    mail_username: str = "example@mail.com"
-    mail_password: str = "password"
-    mail_from: str = "example@mail.com"
-    mail_port: int = 123
-    mail_server: str = "smtp.mail.com"
-    redis_host: str = "localhost"
-    redis_password: str = "password"
+    sqlalchemy_database_url: str = "postgresql+asyncpg://postgres:password@localhost:5432/todo_db"
+    secret_key: str = "secret key"
+    algorithm: str = "HS256"
+    mail_username: str = "example@meta.ua"
+    mail_password: str = "qwerty"
+    mail_from: str = "example@meta.ua"
+    mail_port: int = 465
+    mail_server: str = "smtp.meta.ua"
+    redis_host: str = 'localhost'
     redis_port: int = 6379
-    # cloudinary_name: str = "name"
-    # cloudinary_api_key: str = "123456"
-    # cloudinary_api_secret: str = "secret"
+    cloudinary_name: str = "cloudinary_name"
+    cloudinary_api_key: str = "1234"
+    cloudinary_api_secret: str = "213213"
 
     model_config = ConfigDict(extra='ignore', env_file=".env", env_file_encoding="utf-8")
 
