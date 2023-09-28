@@ -33,7 +33,7 @@ async def get_service_categories(db: AsyncSession = Depends(get_db)): #_: User =
     return service_categories
 
 
-@router.get('/{service_category_id}', response_model=ServiceCategoryResponse) #dependencies=[Depends(access_get)]
+@router.get('/service_category_id/{service_category_id}', response_model=ServiceCategoryResponse) #dependencies=[Depends(access_get)]
 async def get_service_categories_by_id(service_category_id: int, db: AsyncSession = Depends(get_db)): #_: User = Depends(auth_service.get_current_user)
     service_category = await repository_service_categories.get_service_category_by_id(service_category_id, db)
     if not service_category:
@@ -44,7 +44,7 @@ async def get_service_categories_by_id(service_category_id: int, db: AsyncSessio
     return service_category
 
 
-@router.get('/{service_id}', response_model=List[ServiceCategoryResponse]) #dependencies=[Depends(access_get)]
+@router.get('/service_id/{service_id}', response_model=List[ServiceCategoryResponse]) #dependencies=[Depends(access_get)]
 async def get_service_categories_by_service_id(service_id: int, db: AsyncSession = Depends(get_db)): #_: User = Depends(auth_service.get_current_user)
     service_categories = await repository_service_categories.get_service_category_by_service_id(service_id, db)
     if not service_categories:
