@@ -1,18 +1,18 @@
 from fastapi import APIRouter, Depends, HTTPException
-# from sqlalchemy.orm import Session
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 from typing import List
-from sqlalchemy import select
 
 from src.database.db import get_db
-from src.database.models import User, Role, Currency
+from src.database.models import User, Role
 from src.schemas.currency_schemas import CurrencyModel, CurrencyGetResponse
 from src.repository import currencies as repository_currency
-from src.services.auth import auth_service
 from src.services.roles import RolesAccess
+# from sqlalchemy.orm import Session
+# from src.services.auth import auth_service
+# from sqlalchemy import select
 
-router = APIRouter(prefix='/currency', tags=["currency"])
+router = APIRouter(prefix='/currencies', tags=["currencies"])
 
 access_get = RolesAccess([Role.superadmin, Role.admin, Role.moderator, Role.client, Role.master])
 access_create = RolesAccess([Role.superadmin, Role.admin, Role.moderator])
@@ -21,7 +21,7 @@ access_delete = RolesAccess([Role.superadmin, Role.admin])
 access_block = RolesAccess([Role.superadmin, Role.admin])
 
 
-@router.get("/currencies", response_model=List[CurrencyGetResponse]) #dependencies=[Depends(access_get)]
+@router.get("/", response_model=List[CurrencyGetResponse]) #dependencies=[Depends(access_get)]
 async def get_currencies(db: AsyncSession = Depends(get_db)): #_: User = Depends(auth_service.get_current_user)
     currencies = await repository_currency.get_currencies(db)
     if not currencies:
@@ -40,8 +40,6 @@ async def get_currencies(currency_id: int, db: AsyncSession = Depends(get_db)): 
 @router.post('/', response_model=CurrencyGetResponse, status_code=status.HTTP_201_CREATED) #dependencies=[Depends(access_create)]
 async def create_currency(body: CurrencyModel, db: AsyncSession = Depends(get_db)):
     new_currency = await repository_currency.create_currency(body, db)
-    if not new_currency:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Currency not found")
     return new_currency
 
 
