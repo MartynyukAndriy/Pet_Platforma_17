@@ -8,7 +8,7 @@ from sqlalchemy import select
 from src.database.db import get_db
 from src.database.models import User, Role, Currency
 from src.schemas.currency_schemas import CurrencyModel, CurrencyGetResponse
-from src.repository import currency as repository_currency
+from src.repository import currencies as repository_currency
 from src.services.auth import auth_service
 from src.services.roles import RolesAccess
 
