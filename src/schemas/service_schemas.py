@@ -12,4 +12,4 @@ class ServiceResponse(BaseModel):
     service_en: str = 'Hairdressing services'
 
     class Config:
-        orm_mode = True
+        from_attributes = True
