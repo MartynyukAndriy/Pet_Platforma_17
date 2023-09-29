@@ -57,15 +57,25 @@ class MasterResponse(UserResponse):
 
 
 class AdminModel(UserModel):
-    user_id: int = Field(default_factory=lambda: uuid4().hex)
+    user_id: int
     user_role: Role = 'admin'
     is_active: bool = True
 
 
 class AdminResponse(UserResponse):
-    admin_id: int = Field(default_factory=lambda: uuid4().hex)
-    user_role: Role = 'admin'
+    admin_id: int
+    user_id: int
+    user_role: Role
+    name: str
+    email: EmailStr
+    country_id: int
+    city_id: int
+    phone: str
+    avatar: Optional[str]
     is_active: bool
+
+    class Config:
+        orm_mode = True
 
     class Config:
         from_attributes = True

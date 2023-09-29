@@ -10,7 +10,7 @@ class CurrencyGetResponse(BaseModel):
     currency: str = 'ua'
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 

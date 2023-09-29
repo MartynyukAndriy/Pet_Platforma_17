@@ -8,7 +8,7 @@ from sqladmin import Admin
 
 from src.database.db import create_async_engine
 
-from src.routes import auth, users, countries, cities, currencies, services, service_categories
+from src.routes import auth, users, countries, cities, currencies, services
 
 
 engine = create_async_engine(settings.sqlalchemy_database_url)
@@ -50,7 +50,6 @@ app.include_router(countries.router, prefix='/api')
 app.include_router(cities.router, prefix='/api')
 app.include_router(currencies.router, prefix='/api')
 app.include_router(services.router, prefix='/api')
-app.include_router(service_categories.router, prefix='/api')
 
 
 if __name__ == '__main__':
