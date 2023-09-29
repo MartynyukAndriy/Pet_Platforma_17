@@ -61,7 +61,14 @@ async def remove_city(city_id: int,
     return city
 
 
-@router.post("/update", response_model=CityResponse, status_code=status.HTTP_201_CREATED, dependencies=[Depends(access_create)])
+@router.post("/update_cities", response_model=CityResponse, status_code=status.HTTP_201_CREATED)
 async def create_cities(db: AsyncSession = Depends(get_db),
                       user: User = Depends(auth_service.get_current_user)):
-    await address_repository.add_cities_to_ukraine("src/utils/ukraine.json", db, user)
+    try:
+        result = await address_repository.add_cities_to_ukraine("src/utils/ukraine.json", db, user)
+        if result:
+            return result
+        else:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Some error message here")
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
