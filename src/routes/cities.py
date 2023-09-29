@@ -59,3 +59,9 @@ async def remove_city(city_id: int,
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail="City not found or you don't have enough rules to delete")
     return city
+
+
+@router.post("/update", response_model=CityResponse, status_code=status.HTTP_201_CREATED, dependencies=[Depends(access_create)])
+async def create_cities(db: AsyncSession = Depends(get_db),
+                      user: User = Depends(auth_service.get_current_user)):
+    await address_repository.add_cities_to_ukraine("src/utils/ukraine.json", db, user)
