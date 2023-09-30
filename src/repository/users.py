@@ -36,15 +36,15 @@ async def confirmed_email(email: str, db: AsyncSession) -> None:
     await db.commit()
 
 
-async def get_user_info(name: str, db: AsyncSession):
-    sq = select(User).filter_by(name=name)
+async def get_user_info(user_id, db: AsyncSession):
+    sq = select(User).filter_by(user_id=user_id)
     result = await db.execute(sq)
     user = result.scalar_one_or_none()
     return user
 
 
-async def update_user_info(body: UserModel, name: str, db: AsyncSession):
-    sq = select(User).filter_by(name=name)
+async def update_user_info(body: UserModel, user_id, db: AsyncSession):
+    sq = select(User).filter_by(user_id=user_id)
     result = await db.execute(sq)
     updated_user = result.scalar_one_or_none()
     if not updated_user:

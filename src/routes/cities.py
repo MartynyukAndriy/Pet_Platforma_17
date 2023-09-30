@@ -30,8 +30,8 @@ async def read_city(city_id: int,
 @router.post("/", response_model=CityResponse, status_code=status.HTTP_201_CREATED)
 async def create_city(body: CityModel,
                       db: AsyncSession = Depends(get_db),
-                      user: User = Depends(auth_service.get_current_user)):
-    city = await address_repository.create_city(body, db, user)
+                      ):
+    city = await address_repository.create_city(body, db)
     if city is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail="This city is not exists in the database or you don't have enough roots to update")

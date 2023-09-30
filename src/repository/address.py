@@ -15,7 +15,7 @@ async def get_country(country_id: int, db: AsyncSession, user) -> Type[Country] 
     return country.scalar_one_or_none()
 
 
-async def create_country(body: CountryModel, db: AsyncSession, user) -> Country:
+async def create_country(body: CountryModel, db: AsyncSession) -> Country:
     # if user.user_role in ("superadmin", "admin", "moderator"):
     country = Country(country_ukr=body.country_ukr, country_eng=body.country_eng)
     db.add(country)
@@ -54,7 +54,7 @@ async def get_city(city_id: int, db: AsyncSession, user) -> Type[City] | None:
     return city.scalar_one_or_none()
 
 
-async def create_city(body: CityModel, db: AsyncSession, user) -> City:
+async def create_city(body: CityModel, db: AsyncSession) -> City:
     # if user.user_role in ("superadmin", "admin", "moderator"):
     city = City(city_ukr=body.city_ukr, city_eng=body.city_eng, country_id=body.country_id)
     db.add(city)
