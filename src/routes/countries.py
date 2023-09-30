@@ -30,8 +30,8 @@ async def read_country(country_id: int,
 @router.post("/", response_model=CountryResponse, status_code=status.HTTP_201_CREATED)
 async def create_country(body: CountryModel,
                          db: AsyncSession = Depends(get_db),
-                         user: User = Depends(auth_service.get_current_user)):
-    country = await address_repository.create_country(body, db, user)
+                         ):
+    country = await address_repository.create_country(body, db)
     if country is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail="This country is not exists in the database or you don't have enough roots to update")

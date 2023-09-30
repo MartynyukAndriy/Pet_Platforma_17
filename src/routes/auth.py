@@ -4,7 +4,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database.db import get_db
 from src.repository import users as repository_users
-from src.schemas.user_schemas import UserModel, UserResponse
+from src.repository import masters as repository_masters
+from src.schemas.user_schemas import UserModel, UserRes, MasterResponse, MasterModel
 from src.schemas.auth_schemas import TokenModel, RequestEmail
 from src.services.auth import auth_service
 from src.services.email import send_email
@@ -14,11 +15,11 @@ router = APIRouter(prefix='/auth', tags=["auth"])
 security = HTTPBearer()
 
 
-@router.post("/signup", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
-async def signup(body: UserModel,
-                 background_tasks: BackgroundTasks,
-                 request: Request,
-                 db: AsyncSession = Depends(get_db)):
+@router.post("/signup_user", response_model=UserRes, status_code=status.HTTP_201_CREATED)
+async def signup_user(body: UserModel,
+                      background_tasks: BackgroundTasks,
+                      request: Request,
+                      db: AsyncSession = Depends(get_db)):
 
     exist_user = await repository_users.get_user_by_email(body.email, db)
     if exist_user:
@@ -27,6 +28,20 @@ async def signup(body: UserModel,
     new_user = await repository_users.create_user(body, db)
     background_tasks.add_task(send_email, new_user.email, new_user.name, str(request.base_url))
     return new_user
+
+
+@router.post("/signup_master", response_model=MasterResponse, status_code=status.HTTP_201_CREATED)
+async def signup_master(body: MasterModel,
+                        background_tasks: BackgroundTasks,
+                        request: Request,
+                        db: AsyncSession = Depends(get_db)):
+    exist_user = await repository_users.get_user_by_email(body.email, db)
+    if exist_user:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=AuthMessages.account_already_exists)
+    body.password = auth_service.get_password_hash(body.password)
+    new_master = await repository_masters.create_master(body, db)
+    background_tasks.add_task(send_email, body.email, body.name, str(request.base_url))
+    return new_master
 
 
 @router.post("/login", response_model=TokenModel)
