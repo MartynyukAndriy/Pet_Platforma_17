@@ -1,3 +1,5 @@
+import re
+
 from fastapi import APIRouter, HTTPException, Depends, status, Security, BackgroundTasks, Request
 from fastapi.security import OAuth2PasswordRequestForm, HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -15,7 +17,25 @@ router = APIRouter(prefix='/auth', tags=["auth"])
 security = HTTPBearer()
 
 
-@router.post("/signup_user", response_model=UserRes, status_code=status.HTTP_201_CREATED)
+async def validate_pwd(password: str) -> str|bool:
+        pwd_pattern = r"((?=.*d)(?=.*[a-z])(?=.*[A-Z]).{8,})"
+        if re.match(pwd_pattern, password):
+            return password
+        else:
+            return False
+
+    #
+    # #  (                Начало группы
+    # #  (?=.*d)          Должен содержать цифру от 0 до 9
+    # #  (?=.*[a-z])      Должен содержать символ латинницы в нижем регистре
+    # #  (?=.*[A-Z])      Должен содержать символ латинницы в верхнем регистре
+    # #  (?=.*[@#$%])     Должен содержать специальный символ из списка "@#$%"
+    # #  .                Совпадает с предыдущими условиями
+    # #  {8,20}           Длина - от 8 до 20 символов
+    # #  )                Конец группы
+
+
+@router.post("/signup_user", response_model=UserRes|str, status_code=status.HTTP_201_CREATED)
 async def signup_user(body: UserModel,
                       background_tasks: BackgroundTasks,
                       request: Request,
@@ -24,10 +44,16 @@ async def signup_user(body: UserModel,
     exist_user = await repository_users.get_user_by_email(body.email, db)
     if exist_user:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=AuthMessages.account_already_exists)
-    body.password = auth_service.get_password_hash(body.password)
-    new_user = await repository_users.create_user(body, db)
-    background_tasks.add_task(send_email, new_user.email, new_user.name, str(request.base_url))
-    return new_user
+
+    is_true_password = await validate_pwd(body.password)
+    if is_true_password:
+        body.password = auth_service.get_password_hash(body.password)
+        new_user = await repository_users.create_user(body, db)
+        background_tasks.add_task(send_email, new_user.email, new_user.name, str(request.base_url))
+        return new_user
+    else:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+                            detail="Password doesn't match requiments. The password must be at least 8 characters, contain lowercase and uppercase letters and numbers!")
 
 
 @router.post("/signup_master", response_model=MasterResponse, status_code=status.HTTP_201_CREATED)
@@ -38,10 +64,15 @@ async def signup_master(body: MasterModel,
     exist_user = await repository_users.get_user_by_email(body.email, db)
     if exist_user:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=AuthMessages.account_already_exists)
-    body.password = auth_service.get_password_hash(body.password)
-    new_master = await repository_masters.create_master(body, db)
-    background_tasks.add_task(send_email, body.email, body.name, str(request.base_url))
-    return new_master
+
+    is_true_password = await validate_pwd(body.password)
+    if is_true_password:
+        body.password = auth_service.get_password_hash(body.password)
+        new_master = await repository_masters.create_master(body, db)
+        background_tasks.add_task(send_email, body.email, body.name, str(request.base_url))
+        return new_master
+    else:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Password doesn't match requiments. The password must be at least 8 characters, contain lowercase and uppercase letters and numbers!")
 
 
 @router.post("/login", response_model=TokenModel)
