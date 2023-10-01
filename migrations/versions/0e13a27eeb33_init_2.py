@@ -1,8 +1,8 @@
-"""'Init'
+"""Init-2
 
-Revision ID: 2a0c39c2bc9d
+Revision ID: 0e13a27eeb33
 Revises: 
-Create Date: 2023-09-25 17:53:12.733355
+Create Date: 2023-09-30 17:16:08.246529
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '2a0c39c2bc9d'
+revision: str = '0e13a27eeb33'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -64,7 +64,7 @@ def upgrade() -> None:
     )
     op.create_index(op.f('ix_service_categories_service_category_id'), 'service_categories', ['service_category_id'], unique=False)
     op.create_table('users',
-    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('user_id', sa.UUID(), nullable=False),
     sa.Column('role', sa.Enum('client', 'master', 'admin', 'moderator', 'superadmin', name='role'), nullable=True),
     sa.Column('password', sa.String(length=255), nullable=False),
     sa.Column('name', sa.String(length=50), nullable=True),
@@ -73,6 +73,7 @@ def upgrade() -> None:
     sa.Column('city_id', sa.Integer(), nullable=False),
     sa.Column('phone', sa.String(length=255), nullable=True),
     sa.Column('avatar', sa.String(length=255), nullable=True),
+    sa.Column('birthday', sa.DateTime(), nullable=True),
     sa.Column('refresh_token', sa.String(length=255), nullable=True),
     sa.Column('confirmed', sa.Boolean(), nullable=True),
     sa.Column('banned', sa.Boolean(), nullable=True),
@@ -84,17 +85,16 @@ def upgrade() -> None:
     sa.UniqueConstraint('email')
     )
     op.create_table('admin',
-    sa.Column('admin_id', sa.Integer(), nullable=False),
-    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('admin_id', sa.UUID(), nullable=False),
+    sa.Column('user_id', sa.UUID(), nullable=False),
     sa.Column('is_active', sa.Boolean(), nullable=True),
     sa.Column('last_visit', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['users.user_id'], ),
     sa.PrimaryKeyConstraint('admin_id')
     )
-    op.create_index(op.f('ix_admin_admin_id'), 'admin', ['admin_id'], unique=False)
     op.create_table('master_info',
-    sa.Column('master_id', sa.Integer(), nullable=False),
-    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('master_id', sa.UUID(), nullable=False),
+    sa.Column('user_id', sa.UUID(), nullable=False),
     sa.Column('description', sa.String(), nullable=True),
     sa.Column('salon_name', sa.String(), nullable=True),
     sa.Column('salon_address', sa.String(), nullable=True),
@@ -111,7 +111,7 @@ def upgrade() -> None:
     op.create_index(op.f('ix_master_info_user_id'), 'master_info', ['user_id'], unique=False)
     op.create_table('masters_m2m_services',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('master_id', sa.Integer(), nullable=True),
+    sa.Column('master_id', sa.UUID(), nullable=True),
     sa.Column('service_id', sa.Integer(), nullable=False),
     sa.Column('service_category_id', sa.Integer(), nullable=False),
     sa.Column('service_description', sa.String(), nullable=True),
@@ -127,8 +127,8 @@ def upgrade() -> None:
     )
     op.create_table('user_responses',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('master_id', sa.Integer(), nullable=False),
-    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('master_id', sa.UUID(), nullable=False),
+    sa.Column('user_id', sa.UUID(), nullable=False),
     sa.Column('rate', sa.Integer(), nullable=True),
     sa.Column('comment', sa.String(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=True),
@@ -141,7 +141,7 @@ def upgrade() -> None:
     op.create_index(op.f('ix_user_responses_user_id'), 'user_responses', ['user_id'], unique=False)
     op.create_table('work_photos',
     sa.Column('work_photo_id', sa.Integer(), nullable=False),
-    sa.Column('master_id', sa.Integer(), nullable=False),
+    sa.Column('master_id', sa.UUID(), nullable=False),
     sa.Column('work_photo_url', sa.String(), nullable=True),
     sa.ForeignKeyConstraint(['master_id'], ['master_info.master_id'], ),
     sa.PrimaryKeyConstraint('work_photo_id')
@@ -160,7 +160,6 @@ def downgrade() -> None:
     op.drop_table('masters_m2m_services')
     op.drop_index(op.f('ix_master_info_user_id'), table_name='master_info')
     op.drop_table('master_info')
-    op.drop_index(op.f('ix_admin_admin_id'), table_name='admin')
     op.drop_table('admin')
     op.drop_table('users')
     op.drop_index(op.f('ix_service_categories_service_category_id'), table_name='service_categories')

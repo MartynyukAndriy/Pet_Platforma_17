@@ -17,7 +17,8 @@ async def get_country(country_id: int, db: Session) -> Type[Country] | None:
     return country
 
 
-async def create_country(body: CountryModel, db: Session) -> Country:
+async def create_country(body: CountryModel, db: AsyncSession) -> Country:
+    # if user.user_role in ("superadmin", "admin", "moderator"):
     country = Country(country_ukr=body.country_ukr, country_eng=body.country_eng)
     db.add(country)
     await db.commit()
@@ -46,7 +47,8 @@ async def get_city(city_id: int, db: Session) -> Type[City] | None:
     return select(City).filter(City.city_id == city_id).first()
 
 
-async def create_city(body: CityModel, db: Session) -> City:
+async def create_city(body: CityModel, db: AsyncSession) -> City:
+    # if user.user_role in ("superadmin", "admin", "moderator"):
     city = City(city_ukr=body.city_ukr, city_eng=body.city_eng, country_id=body.country_id)
     db.add(city)
     await db.commit()
