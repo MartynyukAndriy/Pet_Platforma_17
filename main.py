@@ -7,15 +7,15 @@ from src.conf.config import settings
 from sqladmin import Admin
 
 from src.database.db import create_async_engine
-from src.routes import auth, users, countries, cities, currencies, services, service_categories, masters
+from src.routes import auth, users, countries, cities, currencies, services, service_categories, masters, subscribes, \
+    work_photos
 from src.services.admin_panel.admin_panel_auth import authentication_backend
 
 engine = create_async_engine(settings.sqlalchemy_database_url)
 
-
 # Створюємо екземпляр FastApi, встановлюємо назву додатка у swagger та відсортуємо роути по методах:
 from src.services.admin_panel.admin_panel import UserAdmin, MasterInfoAdmin, CityAdmin, CountryAdmin, \
-    SubscribePlanAdmin, UserResponseAdmin, ServiceAdmin, ServiceCategoryAdmin
+    SubscribePlanAdmin, UserResponseAdmin, ServiceAdmin, ServiceCategoryAdmin, WorkPhotoAdmin
 
 app = FastAPI(swagger_ui_parameters={"operationsSorter": "method"}, title='Platforma17 app')
 
@@ -31,6 +31,7 @@ admin.add_view(SubscribePlanAdmin)
 admin.add_view(UserResponseAdmin)
 admin.add_view(ServiceCategoryAdmin)
 admin.add_view(ServiceAdmin)
+admin.add_view(WorkPhotoAdmin)
 
 
 @app.get("/")
@@ -52,6 +53,8 @@ app.include_router(cities.router, prefix='/api')
 app.include_router(currencies.router, prefix='/api')
 app.include_router(services.router, prefix='/api')
 app.include_router(service_categories.router, prefix='/api')
+app.include_router(subscribes.router, prefix='/api')
+app.include_router(work_photos.router, prefix='/api')
 
 
 if __name__ == '__main__':

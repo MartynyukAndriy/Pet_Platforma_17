@@ -1,12 +1,12 @@
 import logging
+from typing import Type
 
 from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from starlette import status
 
 from src.database.models import Admin, User, Role
-from src.schemas.user_schemas import AdminModel, UserModel
+from src.schemas.user_schemas import UserModel
 
 
 async def get_admin_by_email(email: str, db: AsyncSession) -> Admin | None:
@@ -45,7 +45,7 @@ async def create_admin_from_client(user_id: int, db: AsyncSession) -> Admin:
         raise HTTPException(status_code=404, detail="User not found")
 
 
-async def create_client_from_admin(admin_id: int, db: AsyncSession) -> User:
+async def create_client_from_admin(admin_id: int, db: AsyncSession) -> Type[User]:
     admin = await db.get(Admin, admin_id)
 
     if admin:
@@ -86,3 +86,9 @@ async def get_all_masters(db: AsyncSession) -> list[UserModel]:
     masters = result.scalars().all()
     return masters
 
+
+async def get_all_admins(db: AsyncSession) -> list[UserModel]:
+    sq = select(User).filter(User.user_role == Role.admin)
+    result = await db.execute(sq)
+    admins = result.scalars().all()
+    return admins
