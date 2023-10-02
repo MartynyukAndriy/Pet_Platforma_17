@@ -153,7 +153,7 @@ class MastersToServices(Base):
     service_description = Column(String, nullable=True)
     service_price = Column(Float, nullable=False)
     service_sale_price = Column(Float, nullable=True)
-    discount = Column(Float, nullable=True),
+    discount = Column(Float, nullable=True)
     currency_id = Column(Integer, ForeignKey('currencies.currency_id'))
 
     master_info = relationship('MasterInfo', backref="masters_to_services")
