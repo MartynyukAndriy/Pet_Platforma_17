@@ -6,7 +6,7 @@ from sqlalchemy.dialects.postgresql import UUID
 
 from sqlalchemy import Column, String, DateTime, ForeignKey, Boolean, Enum, Integer, func, Float, Table
 from sqlalchemy.orm import declarative_base, relationship
-from sqlalchemy.sql.schema import Table
+# from sqlalchemy.sql.schema import Table
 
 
 Base = declarative_base()
@@ -116,6 +116,9 @@ class UserResponse(Base):
     created_at = Column(DateTime, default=datetime.now)
     updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
 
+    user = relationship('User', backref="user_responses")
+    master_info = relationship('MasterInfo', backref="user_responses")
+
 
 class Service(Base):
     __tablename__ = 'services'
@@ -127,9 +130,11 @@ class Service(Base):
 class ServiceCategories(Base):
     __tablename__ = 'service_categories'
     service_category_id = Column(Integer, primary_key=True, index=True)
-    service_id = Column(Integer, ForeignKey('services.service_id'), nullable=False)
+    service_id = Column(Integer, ForeignKey('services.service_id', ondelete='CASCADE'), nullable=False)
     service_category_ua = Column(String, nullable=True)
     service_category_en = Column(String, nullable=True)
+
+    service = relationship('Service', backref="service_categories")
 
 
 class Currency(Base):
@@ -138,16 +143,35 @@ class Currency(Base):
     currency = Column(String, nullable=False)
 
 
-users_m2m_services = Table(
-    'masters_m2m_services',
-    Base.metadata,
-    Column('id', Integer, primary_key=True),
-    Column('master_id', UUID(as_uuid=True), ForeignKey('master_info.master_id'), default=uuid.uuid4),
-    Column('service_id', Integer, ForeignKey('services.service_id'), nullable=False),
-    Column('service_category_id', Integer, ForeignKey('service_categories.service_category_id'), nullable=False),
-    Column('service_description', String, nullable=True),
-    Column('service_price', Float, nullable=False),
-    Column('service_sale_price', Float, nullable=True),
-    Column('discount', Float, nullable=True),
-    Column('currency_id', Integer, ForeignKey('currencies.currency_id')),
-)
+class MastersToServices(Base):
+    __tablename__ = 'masters_to_services'
+
+    id = Column('id', Integer, primary_key=True)
+    master_id = Column(UUID(as_uuid=True), ForeignKey('master_info.master_id'), default=uuid.uuid4)
+    service_id = Column(Integer, ForeignKey('services.service_id'), nullable=False)
+    service_category_id = Column(Integer, ForeignKey('service_categories.service_category_id'), nullable=False)
+    service_description = Column(String, nullable=True)
+    service_price = Column(Float, nullable=False)
+    service_sale_price = Column(Float, nullable=True)
+    discount = Column(Float, nullable=True),
+    currency_id = Column(Integer, ForeignKey('currencies.currency_id'))
+
+    master_info = relationship('MasterInfo', backref="masters_to_services")
+    service = relationship('Service', backref="masters_to_services")
+    service_category = relationship('ServiceCategories', backref="masters_to_services")
+    currency = relationship('Currency', backref="masters_to_services")
+
+
+# users_m2m_services = Table(
+#     'masters_m2m_services',
+#     Base.metadata,
+#     Column('id', Integer, primary_key=True),
+#     Column('master_id', UUID(as_uuid=True), ForeignKey('master_info.master_id'), default=uuid.uuid4),
+#     Column('service_id', Integer, ForeignKey('services.service_id'), nullable=False),
+#     Column('service_category_id', Integer, ForeignKey('service_categories.service_category_id'), nullable=False),
+#     Column('service_description', String, nullable=True),
+#     Column('service_price', Float, nullable=False),
+#     Column('service_sale_price', Float, nullable=True),
+#     Column('discount', Float, nullable=True),
+#     Column('currency_id', Integer, ForeignKey('currencies.currency_id')),
+# )
