@@ -5,8 +5,8 @@ from starlette import status
 from src.database.db import get_db
 from src.database.models import Admin, Role, User
 from src.repository.admins import create_admin_from_client, get_all_clients, get_all_masters, \
-    create_client_from_admin
-from src.schemas.user_schemas import AdminModel, UserModel, AdminResponse, UserResponse
+    create_client_from_admin, get_all_admins
+from src.schemas.user_schemas import AdminModel, UserModel, AdminResponse, UserRes
 from src.services.roles import RolesAccess
 
 access_get = RolesAccess([Role.superadmin, Role.admin, Role.client])
@@ -24,7 +24,7 @@ async def create_admin_from_client_route(user_id: int, db: AsyncSession = Depend
     return to_admin
 
 
-@router.post("/to_client", response_model=UserResponse, dependencies=[Depends(access_get)])
+@router.post("/to_client", response_model=UserRes, dependencies=[Depends(access_get)])
 async def create_client_from_admin_route(admin_id: int, db: AsyncSession = Depends(get_db)):
     to_client = await create_client_from_admin(admin_id, db)
     return to_client
@@ -46,3 +46,12 @@ async def get_all_masters_route(db: AsyncSession = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Masters not found")
     else:
         return masters
+
+
+@router.get("/admins/", response_model=list[UserModel], dependencies=[Depends(access_get)])
+async def get_all_admins_route(db: AsyncSession = Depends(get_db)):
+    admins = await get_all_admins(db)
+    if len(admins) == 0:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Admins not found")
+    else:
+        return admins
