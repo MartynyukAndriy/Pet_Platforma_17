@@ -1,6 +1,7 @@
 from sqladmin import ModelView
 
-from src.database.models import User, City, Country, SubscribePlan, MasterInfo, Service, ServiceCategories, UserResponse
+from src.database.models import User, City, Country, SubscribePlan, MasterInfo, Service, ServiceCategories, \
+    UserResponse, WorkPhoto
 
 
 # визначаємо зміст адмін-панелі: якими моделями бази даних і якими полями хочемо керувати через адмін-панель:
@@ -122,3 +123,18 @@ class UserResponseAdmin(ModelView, model=UserResponse):
     name = "Відгук"
     name_plural = "Відгуки"
     icon = "fa-regular fa-comment"
+
+
+class WorkPhotoAdmin(ModelView, model=WorkPhoto):
+    column_list = "__all__"
+    column_searchable_list = [WorkPhoto.work_photo_url]
+    column_sortable_list = [WorkPhoto.work_photo_id]
+    column_default_sort = [(WorkPhoto.work_photo_id, True), (WorkPhoto.work_photo_url, False)]
+    can_create = True
+    can_edit = True
+    can_delete = True
+    can_view_details = True
+    can_export = True
+    name = "Work Photo"
+    name_plural = "Work Photos"
+    icon = "fa-solid fa-photo-video"

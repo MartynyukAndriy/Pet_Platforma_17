@@ -49,7 +49,7 @@ class User(Base):
     __tablename__ = "users"
 
     user_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    user_role = Column('role', Enum(Role), default=Role.client)
+    user_role = Column('user_role', Enum(Role), default=Role.client)
     password = Column(String(255), nullable=False)
     name = Column(String(50))
     email = Column(String(250), nullable=False, unique=True)
@@ -153,7 +153,7 @@ class MastersToServices(Base):
     service_description = Column(String, nullable=True)
     service_price = Column(Float, nullable=False)
     service_sale_price = Column(Float, nullable=True)
-    discount = Column(Float, nullable=True),
+    discount = Column(Float, nullable=True)
     currency_id = Column(Integer, ForeignKey('currencies.currency_id'))
 
     master_info = relationship('MasterInfo', backref="masters_to_services")
