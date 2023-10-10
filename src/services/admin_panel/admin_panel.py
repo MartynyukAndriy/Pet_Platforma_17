@@ -6,9 +6,9 @@ from src.database.models import User, City, Country, SubscribePlan, MasterInfo, 
 
 # визначаємо зміст адмін-панелі: якими моделями бази даних і якими полями хочемо керувати через адмін-панель:
 class UserAdmin(ModelView, model=User):
-    column_list = [User.name, User.email, User.phone, User.user_role, User.country_id, User.city_id, User.confirmed, User.created_at, User.updated_at]
+    column_list = [User.name, User.email, User.phone, User.role, User.country_id, User.city_id, User.confirmed, User.created_at, User.updated_at]
     column_searchable_list = [User.name]
-    column_sortable_list = [User.user_id, User.user_role, User.country_id, User.city_id]
+    column_sortable_list = [User.user_id, User.role, User.country_id, User.city_id]
     column_default_sort = [(User.email, True), (User.name, False)]
     can_create = True
     can_edit = True

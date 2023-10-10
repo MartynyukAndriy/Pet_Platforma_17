@@ -49,7 +49,7 @@ class User(Base):
     __tablename__ = "users"
 
     user_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    user_role = Column('user_role', Enum(Role), default=Role.client)
+    role = Column('role', Enum(Role), default=Role.client)
     password = Column(String(255), nullable=False)
     name = Column(String(50))
     email = Column(String(250), nullable=False, unique=True)
