@@ -3,7 +3,6 @@ from datetime import date
 import uuid
 from typing import Optional
 from pydantic import BaseModel, EmailStr, Field, field_validator
-from sqlalchemy.dialects.postgresql import UUID
 from uuid import uuid4
 from src.database.models import Role
 from typing_extensions import Annotated
@@ -78,9 +77,6 @@ class AdminResponse(UserRes):
     admin_id: uuid.UUID = Field(default_factory=lambda: uuid4().hex)
     user_role: Role = 'admin'
     is_active: bool
-
-    class Config:
-        orm_mode = True
 
     class Config:
         from_attributes = True
