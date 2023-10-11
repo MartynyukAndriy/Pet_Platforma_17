@@ -15,3 +15,12 @@ class ServiceCategoryResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class ServiceCategoryCreateMaster(BaseModel):
+    service_category_id: int = 1
+    service_id: int = 1
+    price: float = Field(ge=0.0)
+
+    class Config:
+        from_attributes = True

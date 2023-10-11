@@ -1,4 +1,7 @@
+from typing import Optional
+
 from pydantic import BaseModel, Field
+from src.schemas.service_category_schemas import ServiceCategoryCreateMaster
 
 
 class ServiceModel(BaseModel):
@@ -13,3 +16,7 @@ class ServiceResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class ServiceCreateMaster(ServiceModel):
+    service_categories: list[ServiceCategoryCreateMaster]
