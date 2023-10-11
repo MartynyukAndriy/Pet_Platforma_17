@@ -18,7 +18,7 @@ security = HTTPBearer()
 
 
 async def validate_pwd(password: str) -> str|bool:
-        pwd_pattern = r"((?=.*d)(?=.*[a-z])(?=.*[A-Z]).{8,})"
+        pwd_pattern = r"((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,})"
         if re.match(pwd_pattern, password):
             return password
         else:

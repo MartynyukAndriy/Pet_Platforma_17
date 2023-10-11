@@ -1,4 +1,5 @@
 import re
+from datetime import date
 import uuid
 from typing import Optional
 from pydantic import BaseModel, EmailStr, Field, field_validator
@@ -16,24 +17,7 @@ class UserModel(BaseModel):
     city_id: int = Field(1, gt=0)
     phone: str
     avatar: Optional[str] = Field(None)
-
-    # @field_validator('password')
-    # @classmethod
-    # def validate_password(cls, password: str) -> str:
-    #     pwd_pattern = r"((?=.*d)(?=.*[a-z])(?=.*[A-Z]).{8,})"
-    #
-    #     if re.match(pwd_pattern, password):
-    #         return password
-    #     raise ValueError("Password doesn't match requiments")
-    #
-    # #  (                Начало группы
-    # #  (?=.*d)          Должен содержать цифру от 0 до 9
-    # #  (?=.*[a-z])      Должен содержать символ латинницы в нижем регистре
-    # #  (?=.*[A-Z])      Должен содержать символ латинницы в верхнем регистре
-    # #  (?=.*[@#$%])     Должен содержать специальный символ из списка "@#$%"
-    # #  .                Совпадает с предыдущими условиями
-    # #  {8,20}           Длина - от 8 до 20 символов
-    # #  )                Конец группы
+    birthday: date
 
 
 class UserRes(BaseModel):
@@ -46,6 +30,7 @@ class UserRes(BaseModel):
     city_id: int
     phone: str
     avatar: Optional[str] = Field(None)
+    birthday: date
 
     class Config:
         from_attributes = True
